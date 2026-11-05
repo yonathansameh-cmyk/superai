@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101322">
+<title>SUPER AI</title>
+<style>
+:root{--bg:#0b0e19;--panel:#141a2b;--panel2:#1b2338;--text:#f4f6ff;--muted:#aab3ca;--accent:#8b78ff;--accent2:#32d6c5;--line:#29324b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#26204c 0,transparent 42%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;min-height:100vh}
+.app{max-width:850px;margin:auto;min-height:100vh;display:flex;flex-direction:column;padding:16px}
+header{display:flex;align-items:center;gap:12px;padding:12px 4px 18px;border-bottom:1px solid var(--line)}
+.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:23px;font-weight:900;color:#101322;box-shadow:0 8px 30px #7666ff44}
+h1{font-size:21px;margin:0;letter-spacing:.5px}header p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.status{margin-inline-start:auto;border:1px solid #665caa;color:#c9c0ff;background:#211d3c;border-radius:30px;padding:7px 10px;font-size:11px}
+.hero{text-align:center;padding:34px 10px 22px}.hero h2{font-size:clamp(25px,6vw,38px);margin:0 0 8px}.gradient{background:linear-gradient(90deg,#a99aff,#53e4d1);background-clip:text;color:transparent}.hero p{color:var(--muted);margin:0;font-size:14px}
+.panel{background:#141a2bdc;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 15px 45px #0003}
+.label{font-size:13px;color:var(--muted);margin:0 0 10px}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.mode{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:13px 7px;border-radius:14px;font:inherit;cursor:pointer}
+.mode b{display:block;font-size:13px}.mode small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.mode.active{border-color:var(--accent);background:#282448;box-shadow:inset 0 0 0 1px #8b78ff55}
+.notice{margin-top:13px;padding:11px 12px;border-radius:12px;background:#20243a;color:#d2d8eb;font-size:12px;line-height:1.7}
+.chat{margin-top:18px;flex:1;min-height:220px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:90%;padding:12px 14px;border-radius:16px;line-height:1.75;font-size:14px;white-space:pre-wrap}
+.bot{background:var(--panel2);border:1px solid var(--line);align-self:flex-start;border-top-right-radius:5px}
+.user{background:linear-gradient(135deg,#5546a7,#386f83);align-self:flex-end;border-top-left-radius:5px}
+.composer{position:sticky;bottom:0;margin-top:15px;padding:10px;background:#111625;border:1px solid var(--line);border-radius:18px;display:flex;gap:8px;align-items:flex-end}
+textarea{flex:1;resize:none;min-height:46px;max-height:130px;border:0;outline:0;background:transparent;color:var(--text);font:inherit;padding:10px}
+textarea::placeholder{color:#8791aa}
+.send{border:0;border-radius:13px;background:linear-gradient(135deg,var(--accent),#5c9be8);color:white;font-weight:700;padding:12px 16px;font:inherit;cursor:pointer}
+.send:disabled{opacity:.5}
+.foot{text-align:center;color:#7f89a3;font-size:11px;padding:12px 4px}
+@media(max-width:480px){.app{padding:12px}.hero{padding-top:28px}.mode{padding:11px 4px}.mode b{font-size:12px}.mode small{font-size:9px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="logo">S</div>
+ <div><h1>SUPER AI</h1><p>منصة واحدة لعدة نماذج ذكاء اصطناعي</p></div>
+ <div class="status" id="status">جارٍ الاتصال...</div>
+</header>
+<section class="hero">
+ <h2><span class="gradient">مستقبلك مع الذكاء</span></h2>
+ <p>اختر طريقة العمل وابدأ محادثتك</p>
+</section>
+<section class="panel">
+ <p class="label">اختر وضع الذكاء الاصطناعي</p>
+ <div class="modes">
+  <button class="mode active" data-mode="chatgpt"><b>ChatGPT</b><small>وضع ChatGPT</small></button>
+  <button class="mode" data-mode="gemini"><b>Gemini</b><small>وضع Gemini</small></button>
+  <button class="mode" data-mode="both"><b>الدمج ✨</b><small>النموذجان معًا</small></button>
+ </div>
+ <div class="notice" id="modeInfo">تم اختيار ChatGPT. هذه واجهة جاهزة للربط بخادم آمن؛ لم يتم توصيل أي نموذج بعد.</div>
+</section>
+<main class="chat" id="chat">
+ <div class="msg bot">مرحبًا بك في SUPER AI! 👋<br>اختر وضعًا واكتب سؤالك. هذه الواجهة متصلة بخادم SUPER AI؛ اختر النموذج واكتب سؤالك.</div>
+</main>
+<form class="composer" id="form">
+ <textarea id="prompt" placeholder="اكتب رسالتك هنا..." rows="1" aria-label="اكتب رسالتك"></textarea>
+ <button class="send" id="send" type="submit">إرسال</button>
+</form>
+<div class="foot">SUPER AI · نموذج أولي قابل للتطوير · لا تضع مفاتيح API داخل هذا الملف</div>
+</div>
+<script>
+const buttons=[...document.querySelectorAll('.mode')];
+const info=document.getElementById('modeInfo');
+const chat=document.getElementById('chat');
+const form=document.getElementById('form');
+const promptBox=document.getElementById('prompt');
+const sendButton=document.getElementById('send');
+const statusEl=document.getElementById('status');
+let mode='chatgpt';
+const history=[];
+const descriptions={
+ chatgpt:'تم اختيار ChatGPT. ستُرسل رسالتك إلى OpenAI عبر الخادم الآمن.',
+ gemini:'تم اختيار Gemini. ستُرسل رسالتك إلى Google عبر الخادم الآمن.',
+ both:'تم اختيار وضع الدمج. سيجيب النموذجان بالتوازي وستظهر الإجابتان.'
+};
+buttons.forEach(btn=>btn.addEventListener('click',()=>{
+ mode=btn.dataset.mode;
+ buttons.forEach(b=>b.classList.toggle('active',b===btn));
+ info.textContent=descriptions[mode];
+}));
+function addMessage(text,kind){
+ const div=document.createElement('div');
+ div.className='msg '+kind;
+ div.textContent=text;
+ chat.appendChild(div);
+ div.scrollIntoView({behavior:'smooth',block:'nearest'});
+ return div;
+}
+async function sendToServer(message){
+ const response=await fetch('/api/chat',{
+  method:'POST',headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({mode,message,history:history.slice(-13,-1)})
+ });
+ const data=await response.json().catch(()=>({error:'استجابة غير مفهومة من الخادم'}));
+ if(!response.ok) throw new Error(data.error||`خطأ في الخادم (${response.status})`);
+ return data;
+}
+form.addEventListener('submit',async e=>{
+ e.preventDefault();
+ const value=promptBox.value.trim();
+ if(!value||sendButton.disabled)return;
+ addMessage(value,'user');
+ promptBox.value='';
+ history.push({role:'user',content:value});
+ sendButton.disabled=true; sendButton.textContent='جارٍ الإرسال…'; statusEl.textContent='متصل';
+ const waiting=addMessage('جارٍ الحصول على الإجابة…','bot');
+ try{
+  const data=await sendToServer(value);
+  waiting.remove();
+  if(mode==='both'){
+   addMessage('🤖 ChatGPT\n'+(data.chatgpt||'لم تصل إجابة من ChatGPT.'),'bot');
+   addMessage('✨ Gemini\n'+(data.gemini||'لم تصل إجابة من Gemini.'),'bot');
+   history.push({role:'assistant',content:'ChatGPT: '+(data.chatgpt||'')+'\nGemini: '+(data.gemini||'')});
+  }else{
+   const answer=data.answer||'لم تصل إجابة.';
+   addMessage(answer,'bot');
+   history.push({role:'assistant',content:answer});
+  }
+ }catch(err){
+  waiting.remove();
+  addMessage('تعذر الاتصال: '+err.message+'\nتأكد من تشغيل الخادم وإضافة مفاتيح API في ملف .env.','bot');
+  statusEl.textContent='خطأ اتصال';
+  history.pop();
+ }finally{
+  sendButton.disabled=false; sendButton.textContent='إرسال'; promptBox.focus();
+ }
+});
+promptBox.addEventListener('keydown',e=>{
+ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}
+});
+fetch('/api/health').then(r=>r.json()).then(d=>{
+ statusEl.textContent=d.ok?'الخادم متصل':'غير متصل';
+}).catch(()=>{statusEl.textContent='شغّل الخادم';});
+</script>
+</body>
+</html>
